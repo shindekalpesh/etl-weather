@@ -3,6 +3,7 @@
 Fetch climatic information from a public weather API called Open-Meteo.
 
 Fetching data for location: Switzerland.
+
 api_endpoint = https://api.open-meteo.com/v1/forecast?latitude=46.8182&longitude=8.2275&&current_weather=true
 
 
