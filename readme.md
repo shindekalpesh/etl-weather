@@ -33,3 +33,8 @@ json = {
     "weathercode": 1
   }
 }
+
+
+Python Library Dependencies Required:
+1. "pip install apache-airflow-providers-http"
+2. "pip install apache-airflow-providers-postgres"
