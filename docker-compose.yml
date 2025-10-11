@@ -1,0 +1,16 @@
+version: '3'
+services:
+  postgres: 
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:        # volumes means if the application is stopped, the data is not lost. A backup is saved in the following directory.
+      - postgres_data:/var/lib/postgresql/data    
+
+  volumes:
+    postgres_data:
