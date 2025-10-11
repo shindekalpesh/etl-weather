@@ -52,3 +52,23 @@ with DAG(
         else:
             raise Exception(f"Failed to fetch the weather data: {response.status_code}. ")
         
+    
+    @task()
+    def transform_weather_data(weather_data):
+        """Transform the extracted weather data"""
+        
+        current_weather = weather_data['current_weather']
+        print("current_weather", type(current_weather), current_weather)
+        
+        transformed_data = {
+            'latitude'      : LATITUDE,
+            'longitude'     : LONGITUDE,
+            'temperature'   : current_weather['temperature'],
+            'windspeed'     : current_weather['windspeed'],
+            'winddirection' : current_weather['winddirection'],
+            'weathercode'   : current_weather['weathercode'],
+            
+        }
+        print("transformed_data", type(transformed_data), transformed_data)
+        
+        return transformed_data
