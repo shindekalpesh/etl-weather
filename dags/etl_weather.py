@@ -72,3 +72,47 @@ with DAG(
         print("transformed_data", type(transformed_data), transformed_data)
         
         return transformed_data
+    
+    
+    @task()
+    def load_weather_data(transformed_data):
+        """load transformed data to Postgres"""
+        
+        # Use PostgresHook for connection details with Airflow Connection
+        pg_hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID)
+        conn = pg_hook.get_conn()
+        cursor = conn.cursor()
+        
+        # Create table if it does not exist
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS weather_data (
+            latitude VARCHAR(20),
+            longitude VARCHAR(20),
+            temperature FLOAT,
+            windspeed FLOAT,
+            winddirection FLOAT,
+            weathercode INT,
+            timestamp TIMESTAMP DEFAILT CURRENT_TIMESTAMP,
+        )                    
+        """)
+        
+        # Insert the data into the weather_data table
+        cursor.execute("""
+        INSERT INTO weather_data (latitude, longitude, temperature, windspeed, winddirection, weathercode)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        """, (
+            transformed_data['latitude'], 
+            transformed_data['longitude'], 
+            transformed_data['temperature'], 
+            transformed_data['windspeed'], 
+            transformed_data['winddirection'], 
+            transformed_data['weathercode'], 
+            )
+        )
+        
+        # INSERT INTO weather_data (latitude, longitude, temperature, windspeed, winddirection, weathercode)
+        # VALUES (%(latitude)s, %(longitude)s, %(temperature)s, %(windspeed)s, %(winddirection)s, %(weathercode)s)
+        # , transformed_data                                                                                    -- Just a cleaner version of above 3 line snippets
+        
+        conn.commit()
+        conn.close()
